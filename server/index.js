@@ -5,10 +5,16 @@ const models = require("./model/model.js")
 const router = require("./routes/index.js")
 const fileUpload = require("express-fileupload")
 const path = require("path")
+const cors = require("cors")
 
 const PORT = process.env.PORT || 5000
 
 const app = express()
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    methods: ["POST", "GET", "PUT", "DELETE"]
+}))
 
 app.use(express.static(path.resolve(__dirname, "static")))
 app.use(fileUpload({}))
