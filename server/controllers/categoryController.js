@@ -35,15 +35,17 @@ class CategoryController {
             if (subName) {
                 const subCategory = await SubCategory.create({
                     name: subName,
-                    url: `/category-products/${slugify(name)}/${slugify(subName)}`,
+                    url: `/category-products/${category.id}`,
                     categoryId: category.id
                 })
                 if (subSubName) {
-                    await SubSubCategory.create({
+                    const subSubCategory = await SubSubCategory.create({
                         name: subSubName,
-                        url: `/category-products/${slugify(name)}/${slugify(subName)}/${slugify(subSubName)}`,
                         subCategoryId: subCategory.id
                     })
+
+                    subSubCategory.url = `/category-products/${subSubCategory.id}`
+                    await subSubCategory.save()
                 }
             }
             const fullCategory = await Category.findByPk(category.id, {
@@ -74,11 +76,11 @@ class CategoryController {
                 include: [
                     {
                         model: SubCategory,
-                        as: "sub_categories",
+                        as: "sub_category",
                         include: [
                             {
                                 model: SubSubCategory,
-                                as: "sub_sub_categories"
+                                as: "sub_sub_category"
                             }
                         ]
                     }

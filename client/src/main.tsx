@@ -8,7 +8,7 @@ import {
 import { Provider } from "react-redux";
 import { Bar, Header } from './root/index';
 import { store } from './store/store';
-import { MainPage } from './page/index';
+import { CategoryPage, MainPage } from './page/index';
 
 const router = createBrowserRouter([
   {
@@ -22,6 +22,10 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <MainPage />
+          },
+          {
+            path: "/category-products/:id",
+            element: <CategoryPage />
           }
         ]
       }

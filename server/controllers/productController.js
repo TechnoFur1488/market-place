@@ -1,4 +1,4 @@
-const { Product } = require("../model/model")
+const { Product, SubSubCategory } = require("../model/model")
 const uuid = require("uuid")
 const path = require("path")
 class ProductController {
@@ -31,12 +31,28 @@ class ProductController {
         }
     }
 
-    async getAll (req, res) {
+    async getAll(req, res) {
         try {
             const product = await Product.findAll()
             return res.json(product)
         } catch (e) {
             return res.status(500).json({ message: "На сервере произошла ошибка" })
+        }
+    }
+
+    async getAllCategoryProducts(req, res) {
+        try {
+            const { subSubCategoryId } = req.params
+            
+            if (!subSubCategoryId) {
+                return res.status(400).json({ message: "Не указан ID подкатегории" })
+            }
+
+            const products = await Product.findAll({ where: { subSubCategoryId }})
+
+            return res.json(products)
+        } catch (e) {
+            console.log(e);
         }
     }
 }

@@ -55,10 +55,10 @@ Product.belongsTo(Cart)
 Product.hasOne(ProductOption)
 ProductOption.belongsTo(Product)
 
-Category.hasMany(SubCategory, {as: "sub_categories"})
+Category.hasMany(SubCategory, {as: "sub_category"})
 SubCategory.belongsTo(Category)
 
-SubCategory.hasMany(SubSubCategory, {as: "sub_sub_categories"})
+SubCategory.hasMany(SubSubCategory, {as: "sub_sub_category"})
 SubSubCategory.belongsTo(SubCategory)
 
 SubSubCategory.hasMany(Product)

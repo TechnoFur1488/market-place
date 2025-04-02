@@ -1,5 +1,8 @@
+import { CardProduct } from "@/components/shared/index.ts"
 import { useGetProductsQuery } from "../store/apiSlice.ts"
 import React from "react"
+import { ErrorPage, LoadingPage } from "../page-waiting/index.ts"
+import { Skeleton } from "@/components/ui/skeleton.tsx"
 
 interface Props {
     className?: string
@@ -13,29 +16,41 @@ interface Product {
     discount: number,
 }
 
-export const MainPage: React.FC<Props> = ({ className }) =>  {
-    
-    const {data, isLoading, isError} = useGetProductsQuery()
-    console.log(data);
-    
-    if(isLoading) return <h1>Загрузка</h1>
-    
-    if(isError) return <h1>Ошибка запроса</h1>
+export const MainPage: React.FC<Props> = ({ }) => {
+
+    const { data, isLoading, isError } = useGetProductsQuery()
+
+    if (isLoading) return <LoadingPage />
+    if (isError) return <ErrorPage />
 
     const serverUrl = import.meta.env.VITE_APP_API_URL || "http://localhost:5000/"
 
+    const skeleton = Array.from({ length: 30 })
+
     return (
-        <div>
+        <div className="grid grid-cols-6 gap-x-[30px] gap-y-[30px]">
             {data?.map((el: Product) => {
                 return (
-                    <div key={el.id}>
-                        <img src={serverUrl + el.img} alt="" />
-                        <span>{el.name}</span>
-                        <span>{el.price}</span>
-                        <span>{el.discount}</span>
-                    </div>
+                    <CardProduct
+                        key={el.id}
+                        isImgProduct={serverUrl + el.img}
+                        isNameProduct={el.name}
+                        isPriceProduct={el.price}
+                        isDiscountProduct={el.discount}
+                    />
                 )
             })}
+
+            {skeleton.map((_, i) => (
+                <div key={i} className='flex flex-col justify-between w-[215px] h-[435px]'>
+                    <div className='flex flex-col justify-between h-[370px]'>
+                        <Skeleton className='rounded-2xl h-[267px] w-[100%] bg-[#303030]' />
+                        <Skeleton className='w-[180px] h-[33px] bg-[#303030] rounded-2xl' />
+                        <Skeleton className='w-[100%] h-[23px] bg-[#303030] rounded-2xl' />
+                    </div>
+                    <Skeleton className='w-[215px] h-11 bg-[#303030] rounded-2xl' />
+                </div>
+            ))}
         </div>
     )
 }
