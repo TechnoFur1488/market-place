@@ -37,6 +37,7 @@ export const MainPage: React.FC<Props> = ({ }) => {
                         isNameProduct={el.name}
                         isPriceProduct={el.price}
                         isDiscountProduct={el.discount}
+                        isProductId={el.id}
                     />
                 )
             })}

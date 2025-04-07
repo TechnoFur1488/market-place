@@ -24,9 +24,22 @@ const Product = sequelize.define("product", {
 const ProductOption = sequelize.define("product_option", {
     id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
     img: {type: DataTypes.STRING, allowNull: false},
+    name: {type: DataTypes.STRING, allowNull: false},
+    price: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
+    discount: {type: DataTypes.INTEGER, allowNull: false, defaultValue: 0},
     description: {type: DataTypes.TEXT, allowNull: false},
     size: {type: DataTypes.STRING, allowNull: false},
-    color: {type: DataTypes.STRING, allowNull: false}
+    color: {type: DataTypes.STRING, allowNull: false},
+    compound : {type: DataTypes.STRING, allowNull: false},
+    gender: {type: DataTypes.STRING, allowNull: false},
+    season: {type: DataTypes.STRING, allowNull: false}
+})
+
+const Rating = sequelize.define("rating", {
+    id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+    img: {type: DataTypes.STRING, allowNull: true},
+    gradeText: {type: DataTypes.TEXT, allowNull: true},
+    grade: {type: DataTypes.INTEGER, allowNull : false, defaultValue: 0}
 })
 
 const Category = sequelize.define("categories", {
@@ -55,6 +68,9 @@ Product.belongsTo(Cart)
 Product.hasOne(ProductOption)
 ProductOption.belongsTo(Product)
 
+ProductOption.hasMany(Rating)
+Rating.belongsTo(ProductOption)
+
 Category.hasMany(SubCategory, {as: "sub_category"})
 SubCategory.belongsTo(Category)
 
@@ -71,5 +87,6 @@ module.exports = {
     ProductOption,
     Category,
     SubCategory,
-    SubSubCategory
+    SubSubCategory,
+    Rating
 }

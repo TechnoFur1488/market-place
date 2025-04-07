@@ -22,10 +22,11 @@ app.use(express.json())
 app.use("/api", router)
 
 
+
 const start = async () => {
     try {
         await sequelize.authenticate()
-        await sequelize.sync()
+        await sequelize.sync({alter: true})
         app.listen(PORT, () => console.log(`Сервер работает на порту ${PORT}`))
     } catch (e) {
         console.log(e)

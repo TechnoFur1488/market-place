@@ -18,7 +18,7 @@ interface Product {
 }
 
 
-export const CategoryPage: React.FC<Props> = ({ className }) => {
+export const CategoryPage: React.FC<Props> = ({ }) => {
 
     const { subSubCategoryId } = useParams<{ subSubCategoryId: string }>()
 
@@ -30,7 +30,7 @@ export const CategoryPage: React.FC<Props> = ({ className }) => {
     const serverUrl = import.meta.env.VITE_APP_API_URL || "http://localhost:5000/"
 
     return (
-        <div className={className}>
+        <div className="grid grid-cols-6 gap-x-[30px] gap-y-[30px]">
             {data?.map((el: Product) => {
                 return (
                     <CardProduct
@@ -39,6 +39,7 @@ export const CategoryPage: React.FC<Props> = ({ className }) => {
                         isNameProduct={el.name}
                         isPriceProduct={el.price}
                         isDiscountProduct={el.discount}
+                        isProductId={el.id}
                     />
                 )
             })}
