@@ -14,8 +14,9 @@ import { Input } from '../ui/input'
 import { usePostRatingMutation } from '@/store/apiSlice'
 
 interface Props {
-    productOptionId: number
+    productOptionId: number | string
 }
+
 
 export const WriteRating: React.FC<Props> = ({ productOptionId }) => {
     const [postData] = usePostRatingMutation()

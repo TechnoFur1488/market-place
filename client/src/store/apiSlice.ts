@@ -43,18 +43,11 @@ interface Rating {
     id: number
     grade: number
     gradeText?: string
-    img?: File
+    img?: string
     productOptionId: number
     createdAt: string
 }
 
-interface CreateRatingDto {
-    grade: number
-    gradeText?: string
-    img?: File
-    productOptionId: number
-    createdAt: string
-}
 
 export const apiSlice = createApi({
     reducerPath: "api",
@@ -67,51 +60,54 @@ export const apiSlice = createApi({
             query: () => "/api/products",
             providesTags: ["Products"]
         }),
-        getCategory: builder.query<Category[], void>({
-            query: () => "/api/category",
+        getProductOption: builder.query<ProductOptions, string>({
+            query: (productId) => `/api/product-option/${productId}`,
             providesTags: ["Products"]
+        }),
+        deleteProduct: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `/api/products/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ["Products"]
         }),
         getCategoryProducts: builder.query<Products[], string>({
             query: (subSubCategoryId) => `/api/products/${subSubCategoryId}`,
             providesTags: ["Products"]
         }),
-        getProductOption: builder.query<ProductOptions, string>({
-            query: (productId) => `/api/product-option/${productId}`,
+        getCategory: builder.query<Category[], void>({
+            query: () => "/api/category",
             providesTags: ["Products"]
         }),
         getRating: builder.query<Rating[], string>({
             query: (productOptionId) => `/api/ratings/product-option/${productOptionId}`,
             providesTags: ["Ratings"]
         }),
-        postRating: builder.mutation<Rating, CreateRatingDto>({
-            query: (body) => {
-                const formData = prepareBody(body)
-                return {
-                    url: `/api/ratings/product-option/${body.productOptionId}`,
-                    method: "POST",
-                    body: formData
-                }
-            },
+        postRating: builder.mutation<Rating, FormData>({
+            query: (formData) => ({
+                url: `/api/ratings/product-option/${formData.get('productOptionId')}`,
+                method: "POST",
+                body: formData
+            }),
+            invalidatesTags: ["Ratings"]
+        }),
+        deleteRating: builder.mutation<void, number>({
+            query: (id) => ({
+                url:  `/api/ratings/${id}`,
+                method: "DELETE",
+            }),
             invalidatesTags: ["Ratings"]
         })
     })
 })
 
-function prepareBody(body: CreateRatingDto): FormData {
-    const formData = new FormData()
-    formData.append("grade", body.grade.toString())
-    formData.append("productOptionId", body.productOptionId.toString())
-    formData.append("createdAt", body.createdAt)
-    if (body.gradeText) formData.append("gradeText", body.gradeText)
-    if (body.img) formData.append("img", body.img)
-    return formData
-}
-
 export const {
     useGetProductsQuery,
-    useGetCategoryQuery,
     useGetCategoryProductsQuery,
+    useDeleteProductMutation,
+    useGetCategoryQuery,
     useGetProductOptionQuery,
     useGetRatingQuery,
-    usePostRatingMutation
+    usePostRatingMutation,
+    useDeleteRatingMutation
 } = apiSlice

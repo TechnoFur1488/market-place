@@ -6,7 +6,6 @@ class RatingController {
     async create(req, res) {
         try {
             const { grade, gradeText } = req.body
-            const { img } = req.files
             const { productOptionId } = req.params
 
             const numberGrade = Number(grade)
@@ -20,14 +19,22 @@ class RatingController {
                 return res.status(404).json({ message: "Вариант товара не найден" })
             }
 
-            if (gradeText.length > 1000) {
+            if (gradeText && gradeText.length > 1000) {
                 return res.status(400).json({ message: "В отзыве не может быть больше 1000 символов" })
             }
 
-            let fileName = uuid.v4() + ".jpg"
-            img.mv(path.resolve(__dirname, "..", "static", fileName))
+            let fileName = null;
+            if (req.files && req.files.img) {
+                fileName = uuid.v4() + ".jpg";
+                await req.files.img.mv(path.resolve(__dirname, "..", "static", fileName));
+            }
 
-            await Rating.create({ grade, gradeText, img: fileName, productOptionId: productOption.id })
+            await Rating.create({
+                grade: numberGrade,
+                gradeText: gradeText || null,
+                img: fileName,
+                productOptionId: productOption.id
+            })
 
             const fullProductsRating = await ProductOption.findByPk(productOption.id, {
                 include: [
@@ -43,13 +50,45 @@ class RatingController {
         }
     }
 
-    async getAllRatingProductOption(req, res) {
+    async getAllRating(req, res) {
         try {
             const { productOptionId } = req.params
 
             const ratingGet = await Rating.findAll({ where: { productOptionId } })
 
             return res.json(ratingGet)
+        } catch (e) {
+            return res.status(500).json({ message: "На сервере произошла ошибка" })
+        }
+    }
+
+    async deleteRating(req, res) {
+        try {
+            const { id } = req.params
+
+            if (!id) {
+                return res.status(400).json({ message: "Некорректные данные" })
+            }
+
+            const rating = await Rating.findByPk(id)
+
+            if (!rating) {
+                return res.status(404).json({ message: "Рейтинг не найден" })
+            }
+
+            const productOptionId = rating.productOptionId
+
+            await Rating.destroy({ where: { id } })
+
+            const fullRatings = await ProductOption.findByPk(productOptionId.id, {
+                include: [
+                    {
+                        model: Rating
+                    }
+                ]
+            })
+
+            return res.json(fullRatings)
         } catch (e) {
             return res.status(500).json({ message: "На сервере произошла ошибка" })
         }

@@ -3,6 +3,7 @@ const ratingController = require("../controllers/ratingController")
 const router = new Router()
 
 router.post("/product-option/:productOptionId", ratingController.create)
-router.get("/product-option/:productOptionId", ratingController.getAllRatingProductOption)
+router.get("/product-option/:productOptionId", ratingController.getAllRating)
+router.delete("/:id", ratingController.deleteRating)
 
 module.exports = router

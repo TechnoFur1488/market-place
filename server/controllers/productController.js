@@ -16,7 +16,7 @@ class ProductController {
             if (price === discount) {
                 return res.status(400).json({ message: "Цена не может быть равна скидке" })
             }
-            if (!name || !price || !discount || !subSubCategoryId || !img || !description || !size || !color || !compound || !gender || !season ) {
+            if (!name || !price || !discount || !subSubCategoryId || !img || !description || !size || !color || !compound || !gender || !season) {
                 return res.status(400).json({ message: "Некорректные данные" })
             }
             if (description.length < 550) {
@@ -31,9 +31,9 @@ class ProductController {
             await ProductOption.create({ img: fileName, name, price, discount, description, size, color, compound, gender, season, productId: product.id })
 
             const fullProducts = await Product.findByPk(product.id, {
-                include: [{
+                include: {
                     model: ProductOption,
-                }]
+                }
             })
 
             return res.json(fullProducts)
@@ -64,6 +64,24 @@ class ProductController {
             return res.json(products)
         } catch (e) {
             console.log(e);
+        }
+    }
+
+    async deleteProduct(req, res) {
+        try {
+            const { id } = req.params
+
+            if (!id) {
+                return res.status(400).json({ message: "Некорректные данные" })
+            }
+
+            await Product.destroy({ where: { id } })
+
+            return res.json({ message: "Товар удален" })
+
+        } catch (e) {
+            console.log(e);
+
         }
     }
 

@@ -8,7 +8,7 @@ import {
 import { Provider } from "react-redux";
 import { Bar, Header } from './root/index';
 import { store } from './store/store';
-import { CategoryPage, MainPage, ProductPage } from './page/index';
+import { CategoryPage, CreatePage, MainPage, ProductPage } from './page/index';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +30,10 @@ const router = createBrowserRouter([
           {
             path: "/product-option/:productId",
             element: <ProductPage />
+          },
+          {
+            path: "/create",
+            element: <CreatePage />
           }
         ]
       }

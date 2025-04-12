@@ -65,10 +65,10 @@ Cart.belongsTo(User)
 Cart.hasMany(Product)
 Product.belongsTo(Cart)
 
-Product.hasOne(ProductOption)
+Product.hasOne(ProductOption, {onDelete: "CASCADE"})
 ProductOption.belongsTo(Product)
 
-ProductOption.hasMany(Rating)
+ProductOption.hasMany(Rating, {onDelete: "CASCADE"})
 Rating.belongsTo(ProductOption)
 
 Category.hasMany(SubCategory, {as: "sub_category"})
