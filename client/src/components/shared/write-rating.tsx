@@ -50,7 +50,7 @@ export const WriteRating: React.FC<Props> = ({ productOptionId }) => {
                 fileInputRef.current.value = ''
             }
         } catch (e) {
-            console.log(e)
+            console.error(e)
         }
     }
 

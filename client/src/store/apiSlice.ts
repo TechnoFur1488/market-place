@@ -22,6 +22,7 @@ interface ProductOptions {
     gender: string
     season: string
     productId: number
+    subSubCategoryId: number
 }
 
 interface Category {
@@ -56,6 +57,17 @@ export const apiSlice = createApi({
     }),
     tagTypes: ["Products", "Ratings"],
     endpoints: (builder) => ({
+        postProduct: builder.mutation<ProductOptions, FormData>({
+            query: (formData) => ({
+                url: `/api/products`,
+                method: "POST",
+                body: formData,
+                headers: {
+                    'Content-Type': ''
+                }
+            }),
+            invalidatesTags: ["Products"]
+        }),
         getProducts: builder.query<Products[], void>({
             query: () => "/api/products",
             providesTags: ["Products"]
@@ -93,7 +105,7 @@ export const apiSlice = createApi({
         }),
         deleteRating: builder.mutation<void, number>({
             query: (id) => ({
-                url:  `/api/ratings/${id}`,
+                url: `/api/ratings/${id}`,
                 method: "DELETE",
             }),
             invalidatesTags: ["Ratings"]
@@ -102,6 +114,7 @@ export const apiSlice = createApi({
 })
 
 export const {
+    usePostProductMutation,
     useGetProductsQuery,
     useGetCategoryProductsQuery,
     useDeleteProductMutation,

@@ -35,6 +35,7 @@ export const CategoryPage: React.FC<Props> = ({ }) => {
                 return (
                     <CardProduct
                         key={el.id}
+                        id={el.id}
                         isImgProduct={serverUrl + el.img}
                         isNameProduct={el.name}
                         isPriceProduct={el.price}

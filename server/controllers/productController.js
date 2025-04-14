@@ -38,6 +38,7 @@ class ProductController {
 
             return res.json(fullProducts)
         } catch (e) {
+            console.error(e)
             return res.status(500).json({ message: "На сервере произошла ошибка" })
         }
     }
@@ -63,7 +64,7 @@ class ProductController {
 
             return res.json(products)
         } catch (e) {
-            console.log(e);
+            console.log(e)
         }
     }
 
@@ -80,8 +81,55 @@ class ProductController {
             return res.json({ message: "Товар удален" })
 
         } catch (e) {
-            console.log(e);
+            console.error(e)
+            return res.status(400).json({ message: "На сервере произошла ошибка" })
+        }
+    }
 
+    async updateProduct(req, res) {
+        try {
+            const { id } = req.params
+            const { description, size, color, name, price, discount, compound, gender, season } = req.body
+
+            let fileName
+            if (req.files?.img) {
+                fileName = uuid.v4() + ".jpg"
+                await req.files.img.mv(path.resolve(__dirname, "..", "static", fileName))
+            }
+
+            const productUpdateData = {}
+            if (fileName) productUpdateData.img = fileName
+            if (name) productUpdateData.name = name
+            if (price) productUpdateData.price = price
+            if (discount !== undefined) productUpdateData.discount = discount
+
+            await Product.update(productUpdateData, { where: { id } })
+
+            const optionUpdateData = {}
+            if (fileName) optionUpdateData.img = fileName
+            if (description) optionUpdateData.description = description
+            if (size) optionUpdateData.size = size
+            if (color) optionUpdateData.color = color
+            if (name) optionUpdateData.name = name
+            if (price) optionUpdateData.price = price
+            if (discount !== undefined) optionUpdateData.discount = discount
+            if (compound) optionUpdateData.compound = compound
+            if (gender) optionUpdateData.gender = gender
+            if (season) optionUpdateData.season = season
+
+            await ProductOption.update(optionUpdateData, { where: { productId: id } })
+
+            const fullProduct = await Product.findByPk(id, {
+                include: [{
+                    model: ProductOption
+                }]
+            })
+
+            return res.json(fullProduct)
+
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({ message: "Ошибка сервера при обновлении товара" })
         }
     }
 

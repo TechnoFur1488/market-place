@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton.tsx"
 
 interface Props {
     className?: string
+    productOptionId: number
 }
 
 interface Product {
@@ -15,6 +16,7 @@ interface Product {
     price: number,
     discount: number,
 }
+
 
 export const MainPage: React.FC<Props> = ({ }) => {
 

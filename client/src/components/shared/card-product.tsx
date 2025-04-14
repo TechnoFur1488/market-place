@@ -15,7 +15,6 @@ interface CardProductProps {
 
 export const CardProduct: React.FC<CardProductProps> = ({ id, isImgProduct, isNameProduct, isPriceProduct, isDiscountProduct, isProductId }) => {
 
-
     const [deleteData] = useDeleteProductMutation()
 
     if (isNameProduct.length > 15) {

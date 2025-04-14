@@ -93,6 +93,43 @@ class RatingController {
             return res.status(500).json({ message: "На сервере произошла ошибка" })
         }
     }
+
+    async updateRating(req, res) {
+        try {
+            const { id } = req.params
+            const { grade, gradeText, } = req.body
+    
+            if(!id) {
+                return res.status(400).json({ message: "Некорректные данные" })
+            }
+
+            const numberGrade = Number(grade)
+
+            if (grade > 5 || grade < 1 || !grade || isNaN(numberGrade)) {
+                return res.status(400).json({ message: "Некорректные данные" })
+            }
+    
+            let fileName
+            if (req.files?.img) {
+                fileName = uuid.v4() + ".jpg"
+                await req.files.img.mv(path.resolve(__dirname, "..", "static", fileName))
+            }
+    
+            const ratingUpdate = {}
+    
+            if (grade) ratingUpdate.grade = grade
+            if(gradeText) ratingUpdate.gradeText = gradeText
+    
+            await Rating.update(ratingUpdate, {where: {id}})
+
+            const rating = await Rating.findByPk(id)
+
+            return res.json(rating)
+        } catch (e) {
+            console.error(e)
+            return res.status(500).json({ message: "На сервере произошла ошибка" })
+        }
+    }
 }
 
 module.exports = new RatingController()

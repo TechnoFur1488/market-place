@@ -116,7 +116,7 @@ export const Rating: React.FC<Props> = ({ productOptionId }) => {
 
                     let textRating = el.gradeText || ""
 
-                    if(textRating.length > 100 ) {
+                    if (textRating.length > 100) {
                         textRating = textRating.slice(0, 100)
                     }
 
